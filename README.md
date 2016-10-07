@@ -36,11 +36,11 @@ For each `is` or `else` expression added to the current `when` expression, the t
 
 ```
   const getDrinkPrice =
-    (drink: 'Pepsi' | 'Coke' | 'Orangina'): number | string | boolean =>
+    (drink: 'Pepsi' | 'Coke' | 'Orangina') =>
       when(drink)
         .is('Coke', 1.50)
         .is('Pepsi', true)
         .else('Free')
 ```
 
-Here the return type of the `when` expression will be `number | string | boolean`
+Here the return type of `getDrinkPrice` expression will be `number | string | boolean`
