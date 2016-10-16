@@ -52,4 +52,26 @@ describe('when', () => {
       expect(getDrinkPrice('Orangina')).to.equal('Free')
     })
   })
+
+  describe('with a function as `is` return value', () => {
+    type Action = { type: string }
+    const action: Action = { type: 'INCREMENT' }
+
+    // We expect the return type of apply to be `string | number | boolean`
+    const apply = (action: Action) =>
+      when(action.type)
+        .is('INCREMENT', () => 2)
+        .is('DECREMENT', () => true)
+        .else('NONE')
+
+    it('returns value if matches an expression', () => {
+      expect(apply({ type: 'INCREMENT' })).to.equal(2)
+      expect(apply({ type: 'DECREMENT' })).to.equal(true)
+    })
+
+    it('returns default value if no match', () => {
+      expect(apply({ type: 'Hello' })).to.equal('NONE')
+      expect(apply({ type: 'World' })).to.equal('NONE')
+    })
+  })
 })
