@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "Functional implementation of switch/case, inspired by Ruby case/when.",
   "main": "./lib/when.js",
+  "type": "./lib/when.d.ts",
   "scripts": {
     "build": "tsc",
+    "prepublish": "tsc",
     "test": "mocha ./lib/test"
   },
   "repository": {
@@ -16,7 +18,7 @@
     "case",
     "when"
   ],
-  "author": "kube",
+  "author": "Chris Feijoo <hello@kube.io>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kube/when-switch/issues"
