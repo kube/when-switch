@@ -4,7 +4,8 @@
 Usage
 -----
 You can convert a switch-case use in a functional way, using a single expression:
-```
+
+```js
   import when from 'when-switch'
 
   const getDrinkPrice = drink =>
@@ -19,7 +20,7 @@ TypeScript
 
 `when` is fully compatible with TypeScript, and will check the types you return in each `is` expression:
 
-```
+```js
   const getDrinkPrice =
     (drink: 'Pepsi' | 'Coke' | 'Orangina'): number =>
       when(drink)
@@ -34,7 +35,7 @@ Here the return type of the `when` expression will be `number`
 
 For each `is` or `else` expression added to the current `when` expression, the type is added as an union to the previous type.
 
-```
+```js
   const getDrinkPrice =
     (drink: 'Pepsi' | 'Coke' | 'Orangina') =>
       when(drink)
