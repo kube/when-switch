@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Functional implementation of switch/case, inspired by Ruby case/when.",
   "main": "./lib/when.js",
-  "type": "./lib/when.d.ts",
+  "types": "./lib/when.d.ts",
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build && npm test",
