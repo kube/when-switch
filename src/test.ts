@@ -74,4 +74,34 @@ describe('when', () => {
       expect(apply({ type: 'World' })).to.equal('NONE')
     })
   })
+
+  describe('when entry expression is a string', () => {
+    it('provides a `match` method', () => {
+      expect(when('hello').match).to.be.a('function')
+    })
+
+    describe('match method', () => {
+      const getCaseStyle = (text: string) =>
+        when(text)
+          .match(/^([A-Z][a-z]*)+$/, 'UpperCamelCase')
+          .match(/^([a-z]+[A-Z][a-z]*)+$/, 'LowerCamelCase')
+          .match(/^([a-z]+_[a-z]+)+$/, 'SnakeCase')
+          .else('Unknown')
+
+      it('returns first match', () => {
+        expect(getCaseStyle('Hello')).to.equal('UpperCamelCase')
+        expect(getCaseStyle('HelloWorld')).to.equal('UpperCamelCase')
+        expect(getCaseStyle('helloWorld')).to.equal('LowerCamelCase')
+        expect(getCaseStyle('hello_world')).to.equal('SnakeCase')
+        expect(getCaseStyle('hello')).to.equal('Unknown')
+        expect(getCaseStyle('Hello_World')).to.equal('Unknown')
+      })
+    })
+  })
+
+  describe('when entry expression is not a string', () => {
+    it('does not provides a `match` method', () => {
+      expect(when(42).match).to.be.undefined
+    })
+  })
 })
