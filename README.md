@@ -1,5 +1,5 @@
 # when-switch
-> JavaScript functional implementation of switch/case, inspired by Ruby case/when.
+> ### JavaScript functional implementation of switch/case, inspired by Ruby case/when.
 
 
 Usage
@@ -30,7 +30,7 @@ You can use `match` method to check string against a regular expression.
       .else('Unknown')
 ```
 
-`match` and `is` can both be used in the same `when` expression.
+> `match` and `is` can both be used in the same `when` expression.
 
 
 TypeScript
