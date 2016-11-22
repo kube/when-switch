@@ -1,9 +1,12 @@
 # when-switch
 > JavaScript functional implementation of switch/case, inspired by Ruby case/when.
 
+
 Usage
 -----
 You can convert a switch-case use in a functional way, using a single expression:
+
+### Strict Equality
 
 ```js
   import when from 'when-switch'
@@ -14,6 +17,21 @@ You can convert a switch-case use in a functional way, using a single expression
       .is('Pepsi', 1.80)
       .else(2.00)
 ```
+
+### Regular Expressions
+You can use `match` method to check string against a regular expression.
+
+```js
+  const getCaseStyle = text =>
+    when(text)
+      .match(/^([A-Z][a-z]*)+$/, 'UpperCamelCase')
+      .match(/^([a-z]+[A-Z][a-z]*)+$/, 'LowerCamelCase')
+      .match(/^([a-z]+_[a-z]+)+$/, 'SnakeCase')
+      .else('Unknown')
+```
+
+`match` and `is` can both be used in the same `when` expression.
+
 
 TypeScript
 ----------
