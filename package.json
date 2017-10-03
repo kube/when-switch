@@ -6,7 +6,6 @@
   "types": "./lib/when.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepublish": "npm run build && npm test",
     "test": "mocha ./lib/test"
   },
   "repository": {
