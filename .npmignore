@@ -2,4 +2,4 @@ src
 .vscode
 .editorconfig
 tsconfig.json
-test*
+*.spec*

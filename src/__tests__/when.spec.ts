@@ -8,9 +8,7 @@
      ## ## ## :##
       ## ## ##*/
 
-import 'mocha'
-import { expect } from 'chai'
-import when from './when'
+import when from '../when'
 
 // Here getDrinkPrice returns a number
 describe('with a simple return-type', () => {
@@ -21,12 +19,12 @@ describe('with a simple return-type', () => {
       .else(2.0)
 
   it('returns value if matches an expression', () => {
-    expect(getDrinkPrice('Coke')).to.equal(1.5)
-    expect(getDrinkPrice('Pepsi')).to.equal(1.8)
+    expect(getDrinkPrice('Coke')).toEqual(1.5)
+    expect(getDrinkPrice('Pepsi')).toEqual(1.8)
   })
 
   it('returns default value if no match', () => {
-    expect(getDrinkPrice('Orangina')).to.equal(2.0)
+    expect(getDrinkPrice('Orangina')).toEqual(2.0)
   })
 })
 
@@ -42,12 +40,12 @@ describe('with a union return-type', () => {
       .else('Free')
 
   it('returns value if matches an expression', () => {
-    expect(getDrinkPrice('Coke')).to.equal(1.5)
-    expect(getDrinkPrice('Pepsi')).to.equal(true)
+    expect(getDrinkPrice('Coke')).toEqual(1.5)
+    expect(getDrinkPrice('Pepsi')).toEqual(true)
   })
 
   it('returns default value if no match', () => {
-    expect(getDrinkPrice('Orangina')).to.equal('Free')
+    expect(getDrinkPrice('Orangina')).toEqual('Free')
   })
 })
 
@@ -63,19 +61,19 @@ describe('with a function as `is` return value', () => {
       .else('NONE')
 
   it('returns value if matches an expression', () => {
-    expect(apply({ type: 'INCREMENT' })).to.equal(2)
-    expect(apply({ type: 'DECREMENT' })).to.equal(true)
+    expect(apply({ type: 'INCREMENT' })).toEqual(2)
+    expect(apply({ type: 'DECREMENT' })).toEqual(true)
   })
 
   it('returns default value if no match', () => {
-    expect(apply({ type: 'Hello' })).to.equal('NONE')
-    expect(apply({ type: 'World' })).to.equal('NONE')
+    expect(apply({ type: 'Hello' })).toEqual('NONE')
+    expect(apply({ type: 'World' })).toEqual('NONE')
   })
 })
 
 describe('when entry expression is a string', () => {
   it('provides a `match` method', () => {
-    expect(when('hello').match).to.be.a('function')
+    expect(typeof when('hello').match).toBe('function')
   })
 
   describe('match method', () => {
@@ -87,18 +85,18 @@ describe('when entry expression is a string', () => {
         .else('Unknown')
 
     it('returns first match', () => {
-      expect(getCaseStyle('Hello')).to.equal('UpperCamelCase')
-      expect(getCaseStyle('HelloWorld')).to.equal('UpperCamelCase')
-      expect(getCaseStyle('helloWorld')).to.equal('LowerCamelCase')
-      expect(getCaseStyle('hello_world')).to.equal('SnakeCase')
-      expect(getCaseStyle('hello')).to.equal('Unknown')
-      expect(getCaseStyle('Hello_World')).to.equal('Unknown')
+      expect(getCaseStyle('Hello')).toEqual('UpperCamelCase')
+      expect(getCaseStyle('HelloWorld')).toEqual('UpperCamelCase')
+      expect(getCaseStyle('helloWorld')).toEqual('LowerCamelCase')
+      expect(getCaseStyle('hello_world')).toEqual('SnakeCase')
+      expect(getCaseStyle('hello')).toEqual('Unknown')
+      expect(getCaseStyle('Hello_World')).toEqual('Unknown')
     })
   })
 })
 
 describe('when entry expression is not a string', () => {
   it('does not provides a `match` method', () => {
-    expect(when(42).match).to.be.undefined
+    expect(when(42).match).toBeUndefined()
   })
 })

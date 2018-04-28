@@ -31,12 +31,12 @@ const when = <T>(expr: T) => ({
     typeof expr === 'string'
       ? <V>(regExp: RegExp, value: ((expr?: T) => V) | V): When<T, V> =>
           regExp.test(expr)
-            ? resolvedWhen(value instanceof Function ? value(expr) : value)
+            ? resolvedWhen(typeof value === 'function' ? value(expr) : value)
             : when(expr)
       : undefined,
 
   else: <V>(defaultValue: ((_: T) => V) | V): V =>
-    defaultValue instanceof Function ? defaultValue(expr) : defaultValue
+    typeof defaultValue === 'function' ? defaultValue(expr) : defaultValue
 })
 
 export default when
