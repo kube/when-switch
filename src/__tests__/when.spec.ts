@@ -51,7 +51,6 @@ describe('with a union return-type', () => {
 
 describe('with a function as `is` return value', () => {
   type Action = { type: string }
-  const action: Action = { type: 'INCREMENT' }
 
   // We expect the return type of apply to be `string | number | boolean`
   const apply = (action: Action) =>
@@ -92,11 +91,5 @@ describe('when entry expression is a string', () => {
       expect(getCaseStyle('hello')).toEqual('Unknown')
       expect(getCaseStyle('Hello_World')).toEqual('Unknown')
     })
-  })
-})
-
-describe('when entry expression is not a string', () => {
-  it('does not provides a `match` method', () => {
-    expect(when(42).match).toBeUndefined()
   })
 })

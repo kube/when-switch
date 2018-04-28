@@ -14,7 +14,7 @@ export type When<T, V> = {
   else: <E>(value: ((expr?: T) => E) | E) => V | E
 }
 
-const resolvedWhen = <T, V>(resolvedValue: V) => ({
+const resolvedWhen = <V>(resolvedValue: V) => ({
   is: () => resolvedWhen(resolvedValue),
   match: () => resolvedWhen(resolvedValue),
   else: () => resolvedValue
@@ -26,14 +26,10 @@ const when = <T>(expr: T) => ({
       ? resolvedWhen(value instanceof Function ? value(expr) : value)
       : when(expr),
 
-  // Provide `match` method only if `expr` is a string
-  match:
-    typeof expr === 'string'
-      ? <V>(regExp: RegExp, value: ((expr?: T) => V) | V): When<T, V> =>
-          regExp.test(expr)
-            ? resolvedWhen(typeof value === 'function' ? value(expr) : value)
-            : when(expr)
-      : undefined,
+  match: <V>(regExp: RegExp, value: ((expr?: T) => V) | V): When<T, V> =>
+    regExp.test(expr as any)
+      ? resolvedWhen(typeof value === 'function' ? value(expr) : value)
+      : when(expr),
 
   else: <V>(defaultValue: ((_: T) => V) | V): V =>
     typeof defaultValue === 'function' ? defaultValue(expr) : defaultValue
