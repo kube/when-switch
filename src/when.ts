@@ -26,8 +26,11 @@ const when = <T>(expr: T) => ({
       ? resolvedWhen(value instanceof Function ? value(expr) : value)
       : when(expr),
 
-  match: <V>(regExp: RegExp, value: ((expr?: T) => V) | V): When<T, V> =>
-    regExp.test(expr as any)
+  match: <V>(
+    matcher: { test: (x: any) => boolean },
+    value: ((expr?: T) => V) | V
+  ): When<T, V> =>
+    matcher.test(expr)
       ? resolvedWhen(typeof value === 'function' ? value(expr) : value)
       : when(expr),
 
