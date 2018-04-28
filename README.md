@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/kube/when-switch.svg?style=svg)](https://circleci.com/gh/kube/when-switch)
+
 <h1 align="center">when-switch</h1>
 
 <h3 align="center">
