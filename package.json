@@ -1,33 +1,32 @@
 {
   "name": "when-switch",
   "version": "0.2.0",
-  "description": "Functional implementation of switch/case, inspired by Ruby case/when.",
+  "description":
+    "Functional implementation of switch/case, inspired by Ruby case/when.",
   "main": "./lib/when.js",
   "types": "./lib/when.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "mocha ./lib/test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kube/when-switch.git"
   },
-  "keywords": [
-    "switch",
-    "case",
-    "when"
-  ],
-  "author": "Chris Feijoo <hello@kube.io>",
+  "keywords": ["switch", "case", "when"],
+  "author": {
+    "name": "Chris Feijoo",
+    "url": "https://github.com/kube"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kube/when-switch/issues"
   },
   "homepage": "https://github.com/kube/when-switch#readme",
   "devDependencies": {
-    "@types/chai": "^3.4.34",
-    "@types/mocha": "^2.2.32",
-    "chai": "^3.5.0",
-    "mocha": "^3.1.0",
-    "typescript": "^2.1.0-dev.20161007"
+    "@types/jest": "^22.2.3",
+    "jest": "^22.4.3",
+    "ts-jest": "^22.4.4",
+    "typescript": "^2.8.3"
   }
 }
