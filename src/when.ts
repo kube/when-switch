@@ -8,33 +8,49 @@
      ## ## ## :##
       ## ## ##*/
 
-export type When<T, V> = {
-  is: <I>(expr: T, value: ((expr?: T) => I) | I) => When<T, V | I>
-  match: <I>(expr: RegExp, value: ((expr?: T) => I) | I) => When<T, V | I>
-  else: <E>(value: ((expr?: T) => E) | E) => V | E
+export type Matcher<T, R extends T> = {
+  test: ((x: T) => x is R) | ((x: T) => boolean)
 }
 
-const resolvedWhen = <V>(resolvedValue: V) => ({
-  is: () => resolvedWhen(resolvedValue),
-  match: () => resolvedWhen(resolvedValue),
+export type When<T, V> = {
+  is: <U extends T, W>(
+    matcher: U,
+    returnValue: ((inputValue: U) => W) | W
+  ) => When<T, V | W>
+
+  match: <U extends T, W>(
+    matcher: Matcher<T, U>,
+    returnValue: ((inputValue: U) => W) | W
+  ) => When<T, V | W>
+
+  else: <W>(returnValue: ((inputValue: T) => W) | W) => V | W
+}
+
+/**
+ * Exposes same API as `when`, but just propagates a resolved value,
+ * without doing any further test.
+ */
+const resolve = (resolvedValue: any): When<any, any> => ({
+  is: () => resolve(resolvedValue),
+  match: () => resolve(resolvedValue),
   else: () => resolvedValue
 })
 
-const when = <T>(expr: T) => ({
-  is: <V>(constExpr: T, value: ((expr?: T) => V) | V): When<T, V> =>
+/**
+ * Tests an object against multiple expressions.
+ */
+export const when = <T>(expr: T): When<T, never> => ({
+  is: (constExpr, value) =>
     expr === constExpr
-      ? resolvedWhen(value instanceof Function ? value(expr) : value)
+      ? resolve(typeof value === 'function' ? value(constExpr) : value)
       : when(expr),
 
-  match: <V>(
-    matcher: { test: (x: any) => boolean },
-    value: ((expr?: T) => V) | V
-  ): When<T, V> =>
+  match: (matcher, value) =>
     matcher.test(expr)
-      ? resolvedWhen(typeof value === 'function' ? value(expr) : value)
+      ? resolve(typeof value === 'function' ? value(expr) : value)
       : when(expr),
 
-  else: <V>(defaultValue: ((_: T) => V) | V): V =>
+  else: defaultValue =>
     typeof defaultValue === 'function' ? defaultValue(expr) : defaultValue
 })
 
