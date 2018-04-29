@@ -10,13 +10,21 @@
 
 import when from '../when'
 
-// Here getDrinkPrice returns a number
+/**
+ * Helper function only meant to validate static type inference
+ */
+const assertStaticType = <T, S extends T>() => {
+  return (null as any) as S
+}
+
 describe('with a simple return-type', () => {
   const getDrinkPrice = (drink: 'Pepsi' | 'Coke' | 'Orangina'): number =>
     when(drink)
       .is('Coke', 1.5)
       .is('Pepsi', 1.8)
       .else(2.0)
+
+  assertStaticType<number, ReturnType<typeof getDrinkPrice>>()
 
   it('returns value if matches an expression', () => {
     expect(getDrinkPrice('Coke')).toEqual(1.5)
@@ -28,8 +36,6 @@ describe('with a simple return-type', () => {
   })
 })
 
-// Here getDrinkPrice can return number, string or boolean
-// We expect TypeScript to not throw any type error
 describe('with a union return-type', () => {
   const getDrinkPrice = (
     drink: 'Pepsi' | 'Coke' | 'Orangina'
@@ -38,6 +44,11 @@ describe('with a union return-type', () => {
       .is('Coke', 1.5)
       .is('Pepsi', true)
       .else('Free')
+
+  assertStaticType<
+    number | boolean | string,
+    ReturnType<typeof getDrinkPrice>
+  >()
 
   it('returns value if matches an expression', () => {
     expect(getDrinkPrice('Coke')).toEqual(1.5)
@@ -52,12 +63,13 @@ describe('with a union return-type', () => {
 describe('with a function as `is` return value', () => {
   type Action = { type: string }
 
-  // We expect the return type of apply to be `string | number | boolean`
   const apply = (action: Action) =>
     when(action.type)
       .is('INCREMENT', () => 2)
       .is('DECREMENT', () => true)
-      .else('NONE')
+      .else(() => null)
+
+  assertStaticType<number | boolean | null, ReturnType<typeof apply>>()
 
   it('returns value if matches an expression', () => {
     expect(apply({ type: 'INCREMENT' })).toEqual(2)
@@ -65,17 +77,13 @@ describe('with a function as `is` return value', () => {
   })
 
   it('returns default value if no match', () => {
-    expect(apply({ type: 'Hello' })).toEqual('NONE')
-    expect(apply({ type: 'World' })).toEqual('NONE')
+    expect(apply({ type: 'Hello' })).toBeNull()
+    expect(apply({ type: 'World' })).toBeNull()
   })
 })
 
-describe('when entry expression is a string', () => {
-  it('provides a `match` method', () => {
-    expect(typeof when('hello').match).toBe('function')
-  })
-
-  describe('match method', () => {
+describe('match method', () => {
+  it('returns first match', () => {
     const getCaseStyle = (text: string) =>
       when(text)
         .match(/^([A-Z][a-z]*)+$/, 'UpperCamelCase')
@@ -83,13 +91,62 @@ describe('when entry expression is a string', () => {
         .match(/^([a-z]+_[a-z]+)+$/, 'SnakeCase')
         .else('Unknown')
 
-    it('returns first match', () => {
-      expect(getCaseStyle('Hello')).toEqual('UpperCamelCase')
-      expect(getCaseStyle('HelloWorld')).toEqual('UpperCamelCase')
-      expect(getCaseStyle('helloWorld')).toEqual('LowerCamelCase')
-      expect(getCaseStyle('hello_world')).toEqual('SnakeCase')
-      expect(getCaseStyle('hello')).toEqual('Unknown')
-      expect(getCaseStyle('Hello_World')).toEqual('Unknown')
-    })
+    assertStaticType<string, ReturnType<typeof getCaseStyle>>()
+
+    expect(getCaseStyle('Hello')).toEqual('UpperCamelCase')
+    expect(getCaseStyle('HelloWorld')).toEqual('UpperCamelCase')
+    expect(getCaseStyle('helloWorld')).toEqual('LowerCamelCase')
+    expect(getCaseStyle('hello_world')).toEqual('SnakeCase')
+    expect(getCaseStyle('hello')).toEqual('Unknown')
+    expect(getCaseStyle('Hello_World')).toEqual('Unknown')
+  })
+
+  it('permits pattern matching using custom matcher', () => {
+    type SpaceObject = { x: number; y: number; z: number }
+    type Cube = SpaceObject & { width: number }
+    type Sphere = SpaceObject & { radius: number }
+
+    const SpaceObjectSchema = {
+      test: (_: any): _ is SpaceObject =>
+        typeof _.x === 'number' &&
+        typeof _.y === 'number' &&
+        typeof _.z === 'number'
+    }
+
+    const CubeSchema = {
+      test: (_: any): _ is Cube =>
+        typeof _.width === 'number' && SpaceObjectSchema.test(_)
+    }
+
+    const SphereSchema = {
+      test: (_: any): _ is Sphere =>
+        typeof _.radius === 'number' && SpaceObjectSchema.test(_)
+    }
+
+    const getObjectVolume = (object: SpaceObject) =>
+      when(object)
+        .match(CubeSchema, cube => {
+          assertStaticType<Cube, typeof cube>()
+          return cube.width ** 3
+        })
+        .match(SphereSchema, sphere => {
+          assertStaticType<Sphere, typeof sphere>()
+          return Math.PI * 3 / 4 * sphere.radius ** 3
+        })
+        .else(_ => {
+          assertStaticType<SpaceObject, typeof _>()
+          return null
+        })
+
+    assertStaticType<number | null, ReturnType<typeof getObjectVolume>>()
+
+    const cube: Cube = { x: 0, y: 0, z: 0, width: 4 }
+    expect(getObjectVolume(cube)).toBe(64)
+
+    const sphere: Sphere = { x: 0, y: 0, z: 0, radius: 4 }
+    expect(getObjectVolume(sphere)).toBe(Math.PI * 48)
+
+    const spaceObject: SpaceObject = { x: 0, y: 0, z: 0 }
+    expect(getObjectVolume(spaceObject)).toBeNull()
   })
 })

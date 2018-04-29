@@ -22,9 +22,11 @@ const getDrinkPrice = drink =>
     .else(2.0)
 ```
 
-### Regular Expressions
+### Structural Matching
 
-You can use `match` method to check string against a regular expression.
+You can use `match` method with any object exposing a `test` method.
+
+#### Regular Expressions
 
 ```js
 const getCaseStyle = text =>
@@ -33,6 +35,38 @@ const getCaseStyle = text =>
     .match(/^([a-z]+[A-Z][a-z]*)+$/, 'LowerCamelCase')
     .match(/^([a-z]+_[a-z]+)+$/, 'SnakeCase')
     .else('Unknown')
+```
+
+#### Custom Type Guard Matcher
+
+```ts
+type SpaceObject = { x: number; y: number; z: number }
+type Cube = SpaceObject & { width: number }
+type Sphere = SpaceObject & { radius: number }
+
+const SpaceObjectSchema = {
+  test: (_: any): _ is SpaceObject =>
+    typeof _.x === 'number' &&
+    typeof _.y === 'number' &&
+    typeof _.z === 'number'
+}
+
+const CubeSchema = {
+  test: (_: any): _ is Cube =>
+    typeof _.width === 'number' && SpaceObjectSchema.test(_)
+}
+
+const SphereSchema = {
+  test: (_: any): _ is Sphere =>
+    typeof _.radius === 'number' && SpaceObjectSchema.test(_)
+}
+
+const getObjectVolume = (object: SpaceObject) =>
+  // Each match handler will receive correct static type
+  when(object)
+    .match(CubeSchema, cube => cube.width ** 3)
+    .match(SphereSchema, sphere => Math.PI * 3 / 4 * sphere.radius ** 3)
+    .else(_ => null)
 ```
 
 > `match` and `is` can both be used in the same `when` expression.
