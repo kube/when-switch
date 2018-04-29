@@ -1,8 +1,7 @@
 {
   "name": "when-switch",
-  "version": "0.2.0",
-  "description":
-    "Functional implementation of switch/case, inspired by Ruby case/when.",
+  "version": "0.3.0",
+  "description": "Functional implementation of switch/case, inspired by Ruby case/when.",
   "main": "./lib/when.js",
   "types": "./lib/when.d.ts",
   "scripts": {
@@ -13,7 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/kube/when-switch.git"
   },
-  "keywords": ["switch", "case", "when"],
+  "keywords": [
+    "switch",
+    "case",
+    "when"
+  ],
   "author": {
     "name": "Chris Feijoo",
     "url": "https://github.com/kube"
