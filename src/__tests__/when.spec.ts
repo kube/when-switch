@@ -9,7 +9,7 @@
       ## ## ##*/
 
 import when from '../when'
-import { StaticCheck, Assert, IsType, IsSubtype } from './helpers'
+import { StaticCheck, IsType, IsSubtype } from './helpers'
 
 describe('with a simple return-type', () => {
   const getDrinkPrice = (drink: 'Pepsi' | 'Coke' | 'Orangina'): number =>
@@ -18,7 +18,7 @@ describe('with a simple return-type', () => {
       .is('Pepsi', 1.8)
       .else(2.0)
 
-  StaticCheck<Assert<IsType<number, ReturnType<typeof getDrinkPrice>>>>()
+  StaticCheck<IsType<number, ReturnType<typeof getDrinkPrice>>>()
 
   it('returns value if matches an expression', () => {
     expect(getDrinkPrice('Coke')).toEqual(1.5)
@@ -40,9 +40,7 @@ describe('with a union return-type', () => {
       .else('Free')
 
   StaticCheck<
-    Assert<
-      IsSubtype<number | boolean | string, ReturnType<typeof getDrinkPrice>>
-    >
+    IsSubtype<number | boolean | string, ReturnType<typeof getDrinkPrice>>
   >()
 
   it('returns value if matches an expression', () => {
@@ -64,9 +62,7 @@ describe('with a function as `is` return value', () => {
       .is('DECREMENT', () => true)
       .else(() => null)
 
-  StaticCheck<
-    Assert<IsSubtype<number | boolean | null, ReturnType<typeof apply>>>
-  >()
+  StaticCheck<IsSubtype<number | boolean | null, ReturnType<typeof apply>>>()
 
   it('returns value if matches an expression', () => {
     expect(apply({ type: 'INCREMENT' })).toEqual(2)
@@ -88,7 +84,7 @@ describe('match method', () => {
         .match(/^([a-z]+_[a-z]+)+$/, 'SnakeCase')
         .else('Unknown')
 
-    StaticCheck<Assert<IsType<string, ReturnType<typeof getCaseStyle>>>>()
+    StaticCheck<IsType<string, ReturnType<typeof getCaseStyle>>>()
 
     expect(getCaseStyle('Hello')).toEqual('UpperCamelCase')
     expect(getCaseStyle('HelloWorld')).toEqual('UpperCamelCase')
@@ -123,21 +119,19 @@ describe('match method', () => {
     const getObjectVolume = (object: SpaceObject) =>
       when(object)
         .match(CubeSchema, cube => {
-          StaticCheck<Assert<IsType<Cube, typeof cube>>>()
+          StaticCheck<IsType<Cube, typeof cube>>()
           return cube.width ** 3
         })
         .match(SphereSchema, sphere => {
-          StaticCheck<Assert<IsType<Sphere, typeof sphere>>>()
+          StaticCheck<IsType<Sphere, typeof sphere>>()
           return Math.PI * 3 / 4 * sphere.radius ** 3
         })
         .else(_ => {
-          StaticCheck<Assert<IsType<SpaceObject, typeof _>>>()
+          StaticCheck<IsType<SpaceObject, typeof _>>()
           return null
         })
 
-    StaticCheck<
-      Assert<IsSubtype<number | null, ReturnType<typeof getObjectVolume>>>
-    >()
+    StaticCheck<IsSubtype<number | null, ReturnType<typeof getObjectVolume>>>()
 
     const cube: Cube = { x: 0, y: 0, z: 0, width: 4 }
     expect(getObjectVolume(cube)).toBe(64)
