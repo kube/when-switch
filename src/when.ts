@@ -23,7 +23,13 @@ export type When<T, V> = {
     returnValue: ((inputValue: U) => W) | W
   ) => When<T, V | W>
 
-  else: <W>(returnValue: ((inputValue: T) => W) | W) => V | W
+  else: <W>(returnValue: Callable<T, W> | W) => V | W
+}
+
+export type Callable<T, V> = (inputValue: T) => V
+
+function isCallable<T, V>(inputValue: any): inputValue is Callable<T, V> {
+  return typeof inputValue === 'function'
 }
 
 /**
@@ -42,16 +48,16 @@ const resolve = (resolvedValue: any): When<any, any> => ({
 export const when = <T>(expr: T): When<T, never> => ({
   is: (constExpr, value) =>
     expr === constExpr
-      ? resolve(typeof value === 'function' ? value(constExpr) : value)
+      ? resolve(isCallable(value) ? value(constExpr) : value)
       : when(expr),
 
   match: (matcher, value) =>
     matcher.test(expr)
-      ? resolve(typeof value === 'function' ? value(expr) : value)
+      ? resolve(isCallable(value) ? value(expr) : value)
       : when(expr),
 
   else: defaultValue =>
-    typeof defaultValue === 'function' ? defaultValue(expr) : defaultValue
+    isCallable<T, any>(defaultValue) ? defaultValue(expr) : defaultValue
 })
 
 export default when
