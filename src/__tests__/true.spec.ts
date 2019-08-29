@@ -1,4 +1,13 @@
 
+      /*#######.
+     ########",#:
+   #########',##".
+  ##'##'## .##',##.
+   ## ## ## # ##",#.
+    ## ## ## ## ##'
+     ## ## ## :##
+      ## ## ##*/
+
 import when from '../when'
 import { StaticCheck, IsType, IsSubtype } from './helpers';
 
