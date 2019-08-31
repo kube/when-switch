@@ -21,6 +21,12 @@
     "name": "Chris Feijoo",
     "url": "https://github.com/kube"
   },
+  "contributors": [
+    {
+      "name": "Cezary Drożak",
+      "url": "https://github.com/nawordar"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kube/when-switch/issues"
